@@ -1,0 +1,49 @@
+A. Sophie Blee-Goldman
+Date: 11/1/2018
+Coding Challenge: NAT
+
+Description:
+This program looks for a NAT file and uses it to create a NAT table. This is
+then used to translate network addresses in a file FLOW. An OTUPUT file is
+created with an entry for each entry in FLOW, indicating whether a match was
+found in the NAT table and if so, what the address was translated to.
+
+To run:
+Compile the code then run the "main" executable
+
+To test:
+A simple bash script is provided to test this program. To use it, copy/create/
+modify the NAT and FLOW files in the directory to whatever you would like to
+test, and put the expected output in the file "SAMPLE_OUTPUT" (should end in a
+newline). Several sample files used for testing can be found in the
+"Test_Files" directory. Then run the script "test.sh" to test the program's
+output against your sample; if it is not the sample, any differences will be
+output for you to check.
+
+
+
+Implementation:
+The two main stages of this program are creating the nat table and translating
+the network addresses.
+For the first part, I chose to make a NAT class implemented by an underlying
+hash map to provide constant time lookups. An instance of this class is
+initialized from a file (in this case called 'NAT') that maps from one address
+space to another. This mapping may be for a specific ip:port combination, or
+for a single ip/port (ie a wildcard port xor ip). We account for this when
+performing a lookup by first searching for the given address in our nat table
+and if not found, searching for the ip alone and then the port alone. Since we
+do at most three searches in our hash map per lookup, each lookup is constant
+time.
+The second stage of the program uses this NAT class to do a lookup of each
+address in the FLOW file, one entry at a time. As we parse the FLOW file we
+simultaneously write to the OUTPUT file, indicating whether the lookup was
+successful and if so, what each address was mapped to in our nat table.
+
+Testing:
+This program was tested with various NAT and FLOW files of varying lengths, as
+well as with empty NAT file and/or empty FLOW files. These tests can be found
+in the directory "Test_Files". All tests passed.
+
+Runtime: O(N + M)
+Space Complexity: O(N)
+(where N is the number of entries in NAT and M the number of entries in FLOW)
